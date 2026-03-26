@@ -23,5 +23,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Expone puerto de php-fpm
 EXPOSE 9000
 
-# Comando principal: corre package:discover y luego php-fpm en tiempo de ejecución
-CMD sh -c "php artisan package:discover --ansi && php-fpm"
+# Comando principal: php-fpm solo
+CMD ["php-fpm"]
