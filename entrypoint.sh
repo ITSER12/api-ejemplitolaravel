@@ -1,5 +1,4 @@
 #!/bin/sh
-# entrypoint.sh para Laravel en Railway
 
 # Espera a que MySQL esté listo
 until php -r "new PDO('mysql:host=serene-hope.railway.internal;dbname=railway','root','juJkAoWaHajmJdpcyPgqusADsdvmDSPC');" 2>/dev/null; do

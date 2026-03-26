@@ -1,9 +1,17 @@
-# Dockerfile para Laravel en Railway
+# Usa PHP 8.3 FPM
 FROM php:8.3-fpm
 
-# Instala dependencias y PDO MySQL
-RUN apt-get update && apt-get install -y libzip-dev zip unzip git curl \
+# Instala dependencias del sistema necesarias
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    zip \
+    unzip \
+    git \
+    curl \
+    default-mysql-client \
+    libonig-dev \
     && docker-php-ext-install pdo pdo_mysql zip \
+    && docker-php-ext-enable pdo_mysql \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Composer
