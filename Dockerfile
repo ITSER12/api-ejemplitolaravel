@@ -14,11 +14,8 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-# Instala dependencias de Laravel sin ejecutar scripts aún
+# Instala dependencias de Laravel sin ejecutar scripts
 RUN composer install --no-dev --optimize-autoloader --no-scripts
-
-# Ejecuta manualmente los scripts de Laravel después de que PDO MySQL esté disponible
-RUN php artisan package:discover --ansi
 
 # Da permisos correctos
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
@@ -26,5 +23,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Expone el puerto
 EXPOSE 8000
 
-# Comando para arrancar Laravel
-CMD php artisan serve --host=0.0.0.0 --port=8000
+# Comando para arrancar Laravel y luego descubrir paquetes
+CMD php artisan package:discover --ansi && php artisan serve --host=0.0.0.0 --port=8000
