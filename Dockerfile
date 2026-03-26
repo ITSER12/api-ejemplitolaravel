@@ -14,17 +14,14 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-# Instala dependencias sin scripts
+# Instala dependencias sin scripts (no ejecuta package:discover)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Descubre paquetes de Laravel después de instalar PDO
-RUN php artisan package:discover --ansi
-
-# Da permisos correctos a carpetas necesarias
+# Da permisos correctos
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expone puerto de php-fpm
 EXPOSE 9000
 
-# Comando principal (mantiene el contenedor corriendo)
-CMD ["php-fpm"]
+# Comando principal: corre package:discover y luego php-fpm en tiempo de ejecución
+CMD sh -c "php artisan package:discover --ansi && php-fpm"
