@@ -1,7 +1,7 @@
-# Base PHP-FPM 8.3
+# Base PHP-FPM
 FROM php:8.3-fpm
 
-# Instala dependencias y extensiones
+# Instala dependencias del sistema y extensiones
 RUN apt-get update && apt-get install -y libzip-dev zip unzip git curl \
     && docker-php-ext-install pdo pdo_mysql zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -16,15 +16,15 @@ COPY . .
 # Instala dependencias sin scripts
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Da permisos correctos a storage y bootstrap/cache
+# Da permisos
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expone puerto php-fpm
 EXPOSE 9000
 
-# Copia entrypoint
+# Entrypoint
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# CMD principal: entrypoint
+# CMD principal
 CMD ["/entrypoint.sh"]
