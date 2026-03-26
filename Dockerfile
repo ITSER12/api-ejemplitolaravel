@@ -1,4 +1,4 @@
-# Dockerfile para Laravel en Railway
+# Base PHP con FPM
 FROM php:8.3-fpm
 
 # Instala dependencias del sistema y extensiones PHP necesarias
@@ -14,14 +14,17 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-# Instala dependencias de Laravel sin ejecutar scripts
+# Instala dependencias sin scripts
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Da permisos correctos
+# Descubre paquetes de Laravel después de instalar PDO
+RUN php artisan package:discover --ansi
+
+# Da permisos correctos a carpetas necesarias
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expone el puerto
-EXPOSE 8000
+# Expone puerto de php-fpm
+EXPOSE 9000
 
-# Comando para arrancar Laravel y luego descubrir paquetes
-CMD php artisan package:discover --ansi && php artisan serve --host=0.0.0.0 --port=8000
+# Comando principal (mantiene el contenedor corriendo)
+CMD ["php-fpm"]
